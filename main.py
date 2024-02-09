@@ -138,5 +138,27 @@ def route_create_train():
     }, 201
 
 
+@app.route('/api/stations/<station_id>/trains', methods=['GET'])
+def get_trains_station_wise(station_id):
+    """Simple API for fetching all books info by searching"""
+
+    db = sqlite3.connect("sqlite.db")
+    db.row_factory = sqlite3.Row  # Set row factory to use row objects
+
+    result = db.cursor().execute("SELECT train_id,arrival_time,departure_time FROM train_stop WHERE station_id = ?",
+                                 (station_id,)).fetchall()
+    # Add filtering if search_field and value are provided
+
+    # query += f" ORDER BY {sort_field} {'DESC' if order.lower() == 'desc' else 'ASC'}"
+
+    # Convert each row to a dictionary (JSON object)
+    trains = [dict(row) for row in result]
+
+    return {
+        "station_id": station_id,
+        "trains": trains
+    }, 200
+
+
 if __name__ == "__main__":
     app.run()

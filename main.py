@@ -6,6 +6,41 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
+def create_user(user_id, user_name, balance):
+    conn = sqlite3.connect('sqlite.db')
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO users (user_id, user_name, balance) VALUES (?, ?, ?)', (user_id, user_name, balance))
+    conn.commit()
+    conn.close()
+
+@app.route('api/users', methods=['POST'])
+def create_user():
+    user_data = request.json
+    user_id = user_data.get('user_id')
+    user_name = user_data.get('user_name')
+    balance = user_data.get('balance')
+    
+    # Validate user data
+    if not isinstance(user_id, int):
+        return jsonify({'error': 'user_id must be an integer'}), 400
+    if not isinstance(user_name, str):
+        return jsonify({'error': 'user_name must be a string'}), 400
+    if not isinstance(balance, int):
+        return jsonify({'error': 'balance must be an integer'}), 400
+    
+    # Check if user_id already exists
+    conn = sqlite3.connect('sqlite.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users WHERE user_id = ?', (user_id,))
+    if cursor.fetchone() is not None:
+        conn.close()
+        return jsonify({'error': 'user_id already exists'}), 400
+    
+    # Create the user
+    create_user(user_id, user_name, balance)
+    
+    return jsonify({'message': 'User created successfully'}), 201
+
 @app.route("/api/books", methods=["POST"])
 def route_create_book():
     """Simple API for storing book info"""

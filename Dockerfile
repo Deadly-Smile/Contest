@@ -12,6 +12,6 @@ RUN bash -c "pip install -r requirements.txt"
 
 RUN bash -c "python init_db.py"
 
-EXPOSE 5000
+EXPOSE 8000
 
 CMD ["flask", "run", "--host=0.0.0.0", "--port=8000"]

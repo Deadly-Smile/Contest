@@ -13,7 +13,7 @@ def create_user(user_id, user_name, balance):
     conn.commit()
     conn.close()
 
-@app.route('api/users', methods=['POST'])
+@app.route('/api/users', methods=['POST'])
 def create_user():
     user_data = request.json
     user_id = user_data.get('user_id')
@@ -41,18 +41,85 @@ def create_user():
     
     return jsonify({'message': 'User created successfully'}), 201
 
-@app.route("/api/books", methods=["POST"])
-def route_create_book():
-    """Simple API for storing book info"""
+
+
+@app.route("/api/stations", methods=["POST"])
+def route_create_station():
+    """Simple API for creating station"""
 
     data = request.get_json()
 
     db = sqlite3.connect("sqlite.db")
-    db.cursor().execute("INSERT INTO books (id, title, author, genre, price) VALUES (?, ?, ?, ?, ?)", (data["id"], data["title"], data["author"], data["genre"], data["price"]))
+    db.cursor().execute("INSERT INTO station (station_id, station_name, longitude, latitude) VALUES (?, ?, ?, ?)", (data["station_id"], data["station_name"], data["longitude"], data["latitude"]))
     db.commit()
     db.close()
 
     return data, 201
+
+
+@app.route("/api/stations", methods=["GET"])
+def route_fetch_all_stations():
+    """Simple API for fetching all stations info"""
+
+    db = sqlite3.connect("sqlite.db")
+    db.row_factory = sqlite3.Row
+
+    result = db.cursor().execute("SELECT * FROM station",).fetchall()
+    
+    db.commit()
+    db.close()
+
+    stations = [dict(row) for row in result]
+
+    return {"stations" : stations}, 200
+
+@app.route("/api/trains", methods=["POST"])
+def route_create_train():
+    """Simple API for Creating train info"""
+    data = request.get_json()
+    db = sqlite3.connect("sqlite.db")
+    cnt = 0
+    ser_st = ""
+    ser_end = ""
+    for stops in data["stops"]:
+        cnt+=1
+        if cnt == 1:
+            ser_st = stops["departure_time"]
+        ser_end =  stops["arrival_time"]
+        db.cursor().execute("INSERT INTO train_stop (train_id, station_id, arrival_time, departure_time, fare) VALUES (?, ?, ?, ?, ?)", (data["train_id"], stops["station_id"], stops["arrival_time"], stops["departure_time"], stops["fare"]))
+   
+    db.cursor().execute("INSERT INTO train (train_id, train_name, capacity, service_start, service_ends) VALUES (?, ?, ?, ?, ?)", (data["train_id"], data["train_name"], data["capacity"], ser_st, ser_end))
+    
+    db.commit()
+    db.close()
+
+    return {
+        "train_id": data["train_id"],
+        "train_name": data["train_name"],
+        "capacity": data["capacity"],
+        "service_start": ser_st,
+        "service_ends": ser_end,
+        "num_stations": cnt
+    }, 201
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @app.route("/api/books/<int:id>", methods=["PUT"])
 def route_update_book(id):

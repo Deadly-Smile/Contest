@@ -5,6 +5,15 @@ CREATE TABLE users (
     balance INTEGER NOT NULL
 );
 
+-- DROP TABLE IF EXISTS tickets
+-- CREATE TABLE tickets (
+--     ticket_id INTEGER PRIMARY KEY,
+--     wallet_id INTEGER
+--
+--
+--     FOREIGN KEY (wallet_id) REFERENCES users(user_id)
+-- );
+
 DROP TABLE IF EXISTS station;
 CREATE TABLE station (
     station_id INTEGER PRIMARY KEY AUTOINCREMENT,

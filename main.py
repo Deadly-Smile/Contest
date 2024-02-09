@@ -27,11 +27,6 @@ def add_wallet(wallet_id=None):
         return {
             "message": f"invalid amount: {data['recharge']}"
         }, 400
-    # if 100 > data['recharge'] > 10000:
-    #     return {
-    #         "message": f"invalid amount: {data['recharge']}"
-    #         }, 400
-
     conn = sqlite3.connect('sqlite.db')
     result = conn.cursor().execute("SELECT * FROM users WHERE user_id = ?", (wallet_id,)).fetchone()
     if result is None:

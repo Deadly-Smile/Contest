@@ -145,8 +145,16 @@ def get_trains_station_wise(station_id):
     db = sqlite3.connect("sqlite.db")
     db.row_factory = sqlite3.Row  # Set row factory to use row objects
 
+    conn = sqlite3.connect('sqlite.db')
+    result = conn.cursor().execute("SELECT * FROM station WHERE station_id = ?", (station_id,)).fetchone()
+    if result is None:
+        return {
+            "message": f"station with id: {station_id} was not found"
+        }, 404
+
     result = db.cursor().execute("SELECT train_id,arrival_time,departure_time FROM train_stop WHERE station_id = ?",
                                  (station_id,)).fetchall()
+
     # Add filtering if search_field and value are provided
 
     # query += f" ORDER BY {sort_field} {'DESC' if order.lower() == 'desc' else 'ASC'}"

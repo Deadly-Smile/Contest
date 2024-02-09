@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS books;
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY,
     user_name VARCHAR(255) NOT NULL,
-    balance INTEGER NOT NULL,
+    balance INTEGER NOT NULL
 );
 
 CREATE TABLE wallet (

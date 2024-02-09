@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN bash -c "pip install --upgrade pip"
+# RUN bash -c "pip install --upgrade pip"
 RUN bash -c "pip install -r requirements.txt"
 
 RUN bash -c "python init_db.py"

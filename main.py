@@ -1,7 +1,7 @@
 import sqlite3
 import json
 
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -20,7 +20,6 @@ def create_user():
     user_name = user_data.get('user_name')
     balance = user_data.get('balance')
     
-<<<<<<< HEAD
     # Validate user data
     if not isinstance(user_id, int):
         return jsonify({'error': 'user_id must be an integer'}), 400
@@ -41,68 +40,6 @@ def create_user():
     create_user(user_id, user_name, balance)
     
     return jsonify({'message': 'User created successfully'}), 201
-=======
-    return {"user_id": data["user_id"], "user_name": data["user_name"], "balance": data["balance"]}, 201
-
-
-@app.route('/api/wallets/<int:wallet_id>', methods=['PUT'])
-def add_wallet(wallet_id=None):
-    data = request.get_json()
-
-    if data['recharge'] < 100 or data['recharge'] > 10000:
-        return {
-            "message": f"invalid amount: {data['recharge']}"
-        }, 400
-    # if 100 > data['recharge'] > 10000:
-    #     return {
-    #         "message": f"invalid amount: {data['recharge']}"
-    #         }, 400
-
-    conn = sqlite3.connect('sqlite.db')
-    result = conn.cursor().execute("SELECT * FROM users WHERE user_id = ?", (wallet_id,)).fetchone()
-    if result is None:
-        return {
-            "message": f"wallet with id: {wallet_id} was not found"
-        }, 404
-
-    db = sqlite3.connect("sqlite.db")
-    db.cursor().execute("UPDATE users SET balance = ? WHERE user_id = ?", (data["recharge"] + result[2], wallet_id))
-    db.commit()
-    db.close()
-    result = conn.cursor().execute("SELECT * FROM users WHERE user_id = ?", (wallet_id,)).fetchone()
-
-    response = {
-        "wallet_id": wallet_id,
-        "balance": result[2],
-        "wallet_user": {
-            "user_id": result[0],
-            "user_name": result[1]
-        }
-    }
-    response = jsonify(response)
-    return response, 200
-
-@app.route('/api/wallets/<int:wallet_id>', methods=['GET'])
-def get_wallet(wallet_id=None):
-    # data = request.get_json()
-    conn = sqlite3.connect('sqlite.db')
-    result = conn.cursor().execute("SELECT * FROM users WHERE user_id = ?", (wallet_id,)).fetchone()
-    if result is None:
-        return {
-            "message": f"wallet with id: {wallet_id} was not found"
-        }, 404
-    response = {
-        "wallet_id": wallet_id,
-        "balance": result[2],
-        "wallet_user": {
-            "user_id": result[0],
-            "user_name": result[1]
-        }
-    }
-    response = jsonify(response)
-    return response, 200
-
->>>>>>> 96b01005a5d228e9fef1aa1c1edf044062ac1d86
 
 
 
@@ -195,7 +132,7 @@ def route_update_book(id):
     result = db.cursor().execute("SELECT id FROM books WHERE id = ?", (id,)).fetchone()
 
     if result is None:
-        return {"message": "book with id: "+str(id)+" was not found"}, 404
+        return {"message" : "book with id: "+str(id)+" was not found"}, 404
    
     db = sqlite3.connect("sqlite.db")
     db.cursor().execute("UPDATE books SET title = ?, author = ?, genre = ?, price = ? WHERE id = ?", ( data["title"], data["author"], data["genre"], data["price"], id))
@@ -221,7 +158,7 @@ def route_fetch_all_books():
 
     books = [dict(row) for row in result]
 
-    return {"books": books}, 200
+    return {"books" : books}, 200
 
 
 @app.route("/api/books", methods=["GET"])

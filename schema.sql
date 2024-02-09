@@ -7,7 +7,6 @@ CREATE TABLE users (
 );
 DROP TABLE IF EXISTS wallet;
 
-<<<<<<< HEAD
 CREATE TABLE wallet (
     wallet_id INTEGER PRIMARY KEY,
     balance INTEGER NOT NULL,
@@ -52,8 +51,6 @@ CREATE TABLE train_stop(
     FOREIGN KEY (train_id) REFERENCES train(train_id) ON DELETE SET NULL,
     FOREIGN KEY (station_id) REFERENCES station(station_id) ON DELETE SET NULL
 );
-=======
->>>>>>> 96b01005a5d228e9fef1aa1c1edf044062ac1d86
 -- {
 --  "id": integer, # A numeric ID
 --  "title": "string", # A book title string
